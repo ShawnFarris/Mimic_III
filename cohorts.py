@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import psycopg2
+import os
 
 # below imports are used to print out pretty pandas dataframes
 from IPython.display import display, HTML
@@ -23,8 +24,13 @@ dbname = 'mimic'
 schema_name = 'mimiciii'
 password = 'password'
 
-# Connect to postgres with a copy of the MIMIC-III database
-con = psycopg2.connect(dbname=dbname, user=sqluser, password = password)
+
+if(os.getcwd() == '/Users'):
+    con = psycopg2.connect(dbname=dbname, user=sqluser)
+
+else:
+    # Connect to postgres with a copy of the MIMIC-III database
+    con = psycopg2.connect(dbname=dbname, user=sqluser, password = password)
 
 # the below statement is prepended to queries to ensure they select from the right schema
 query_schema = 'set search_path to ' + schema_name + ';'
