@@ -11,5 +11,7 @@ python process_diagnoses.py < --full_codes, --min_sequences>
 Compute train the Word2Vec embeddings of the diagnoses sequences:
 
 ```
-python icd_embedding.py < --epochs, --embed_dim, --min_word_count, --workers, --down_sample, --window_size> 
+python icd_embedding.py < --epochs, --embed_dim, 
+                          --min_word_count, --workers, 
+                          --down_sample, --window_size> 
 ```
