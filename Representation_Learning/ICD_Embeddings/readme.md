@@ -24,9 +24,9 @@ python reduce_embedding_dimension.py <--pca_dimension,--tsne_perplexity,
 ```
 
 We can view the embeddings:
-'''
+```
 python visualize_embeddings.py <--show_plots>
-'''
+```
 
 We can also explore code similarity under this embedding
 
