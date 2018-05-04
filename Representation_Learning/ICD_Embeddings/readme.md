@@ -15,3 +15,21 @@ python icd_embedding.py < --epochs, --embed_dim,
                           --min_word_count, --workers, 
                           --down_sample, --window_size> 
 ```
+
+The ICD code embeddings with be high dimensional, so to visualize the embeddings, we need to reduce the dimensionality:
+
+```
+python reduce_embedding_dimension.py <--pca_dimension,--tsne_perplexity,
+                                      --tsne_iter>
+```
+
+We can view the embeddings:
+```
+python visualize_embeddings.py <--show_plots>
+```
+
+We can also explore code similarity under this embedding
+
+```
+python code_similarity.py <--code>
+```
