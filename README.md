@@ -1,5 +1,5 @@
 # Mimic_III
-Assortment of Data Processing Scripts for the Mimic III Database.
+Assortment of work related to the Mimic III Database. Including data processing and machine learning.
 
 
 # Useful MIMIC  Resources
