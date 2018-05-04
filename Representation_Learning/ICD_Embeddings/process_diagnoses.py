@@ -128,7 +128,7 @@ diag_seqs = diag_seqs[diag_seqs['SEQ_LEN'] >= args.min_sequence_length]
 diag_seqs.drop(['SEQ_LEN'], axis = 1, inplace = True)
     
 # Save data in Model/embedding folder
-diag_seqs.to_csv(base + '/diagnoses_sequences.csv',index=False)
+diag_seqs.to_csv(base + '/Processed_Data/diagnoses_sequences.csv',index=False)
 print('Processed sequences saved to: ' + base + '/Processed_Data/diagnoses_sequences.csv')
 
 
