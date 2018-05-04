@@ -43,7 +43,7 @@ base = os.getcwd()
 np.random.seed(12)
 
 #### Load embedding dict
-with open(base + '/icd_embedding_dict.pickle', 'rb') as handle:
+with open(base + '/Processed_Data/icd_embedding_dict.pickle', 'rb') as handle:
    embedding_dict = pickle.load(handle)
 
 X = embedding_dict.get('embedding_matrix')
@@ -65,7 +65,7 @@ df_tsne = pd.DataFrame(tsne_results)
 df_tsne.rename(columns = {0:'x1',1:'x2'}, inplace = True)
 df_tsne['label'] = list(model.wv.vocab)
 
-df_tsne.to_csv(base + '/icd_tsne.csv',index = False)
+df_tsne.to_csv(base + '/Processed_Data/icd_tsne.csv',index = False)
 
 
 

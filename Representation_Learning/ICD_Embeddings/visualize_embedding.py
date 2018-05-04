@@ -29,13 +29,13 @@ print(args)
 base = os.getcwd()
 
 #### Load ICD decriptions
-icd9_desc = pd.read_csv(base + '/icd9_desc.csv')
+icd9_desc = pd.read_csv(base + '/ICD_Data/icd9_desc.csv')
 
 #### Script Parameters
 np.random.seed(12)
 
 #### Load tsne data
-df_tsne = pd.read_csv(base + '/icd_tsne.csv')
+df_tsne = pd.read_csv(base + '/Processed_Data/icd_tsne.csv')
 
 
 #################### Plot Embeddings ##################
@@ -74,7 +74,7 @@ def plot_embedding(show_plot = False, label = '',  n_clusters = 5):
     elif label == 'Cluster':
 
         #### Load embedding dict
-        with open(base + '/icd_embedding_dict.pickle', 'rb') as handle:
+        with open(base + '/Processed_Data/icd_embedding_dict.pickle', 'rb') as handle:
            embedding_dict = pickle.load(handle)
         
         X = embedding_dict.get('embedding_matrix')

@@ -8,10 +8,10 @@ Start by loading the `diagnoses` data and processing it for embeddings:
 python process_diagnoses.py < --full_codes, --min_sequences>
 ```
 
-Compute train the Word2Vec embeddings of the diagnoses sequences:
+Compute train the Word2Vec embeddings of the diagnoses sequences. Note: to get full reproducibility of this embedding, you will need to use only a single worker thread (workers=1) in the Word2Vec model AND you must set the `PYTHONHASHSEED` enviorment variable when running this script.
 
 ```
-python icd_embedding.py < --epochs, --embed_dim, 
+<PYTHONHASHSEED=123> python icd_embedding.py < --epochs, --embed_dim, 
                           --min_word_count, --workers, 
                           --down_sample, --window_size> 
 ```

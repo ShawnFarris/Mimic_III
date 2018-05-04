@@ -37,7 +37,7 @@ base = os.getcwd()
 
 #### Load diagnoses sequences
 print('Loaded diagnoses sequences.')
-input_df = pd.read_csv(base + '/diagnoses_sequences.csv')
+input_df = pd.read_csv(base + '/Processed_Data/diagnoses_sequences.csv')
 
 sents = input_df.drop(['SUBJECT_ID','HADM_ID'],axis=1)
 sents = sents['ICD_SEQ'].str.split(' ')
@@ -58,9 +58,9 @@ embedding_matrix = X
 embedding_dict = {'embedding_matrix':embedding_matrix, 'model':model, 'vocab':model.wv.vocab}
 
 
-with open(base + '/icd_embedding_dict.pickle', 'wb') as handle:
+with open(base + '/Processed_Data/icd_embedding_dict.pickle', 'wb') as handle:
     pickle.dump(embedding_dict , handle, protocol=pickle.HIGHEST_PROTOCOL)
-print('Embedding dictionary saved to: ' + base + '/icd_embedding_dict.pickle')
+print('Embedding dictionary saved to: ' + base + '/Processed_Data/icd_embedding_dict.pickle')
 
 
 
