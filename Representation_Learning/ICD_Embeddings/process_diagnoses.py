@@ -32,27 +32,58 @@ print(args)
 base = os.getcwd()
 
 #### check if folder_path already saved
-try:
+# To Do: eliminate need to rerun script
+def get_mimic_data_path():
+    path_found = False
+    while path_found == False:        
+        try:
+            # Check if MIMIC_Data path has already been saved
+            with open(base + '/folder_paths.json') as fp:
+                folder_paths = json.load(fp)
+                print('Path to Mimic data found.')
+            path_found = True 
+            
+        except FileNotFoundError:
+            mimic_data_path = input("Path to Mimic data not found. Enter path, unqouted: ")
+            if mimic_data_path[0] == mimic_data_path[-1] == "'" or mimic_data_path[0] == mimic_data_path[-1] == '"':
+                mimic_data_path = mimic_data_path[1:-1]
+                
+            folder_paths = {'mimic_data_path':mimic_data_path}
+            # Save in Seperate JSON
+            with open(os.getcwd() + '/folder_paths.json','w') as fp:
+                json.dump(folder_paths, fp)
+        
+def load_diagnoses_data(): 
+    data_loaded = False
+    # Check if MIMIC_Data path has already been saved
     with open(base + '/folder_paths.json') as fp:
         folder_paths = json.load(fp)
-    print('Path to Mimic data found.')
-    
-except FileNotFoundError:
-    mimic_data_path = input("Enter path to Mimic data, unqouted: ")
-    if mimic_data_path[0] == mimic_data_path[-1] == "'" or mimic_data_path[0] == mimic_data_path[-1] == '"':
-        mimic_data_path = mimic_data_path[1:-1]
-    
-    folder_paths = {'mimic_data_path':mimic_data_path}
-    # Save in Seperate JSON
-    with open(os.getcwd() + '/folder_paths.json','w') as fp:
-        json.dump(folder_paths, fp)
+        
+    while data_loaded == False:
+        try:	
+            diags = pd.read_csv(folder_paths.get('mimic_data_path') + '/DIAGNOSES_ICD.csv')
+            print('Diagnoses data loaded.')
+            data_loaded = True
+            
+        ## if mimic_data_path doesn't work            
+        except FileNotFoundError:
+            print('Mimic data not found. Reenter path to data.')
+            mimic_data_path = input("Enter path to Mimic data, unqouted: ")
+            if mimic_data_path[0] == mimic_data_path[-1] == "'" or mimic_data_path[0] == mimic_data_path[-1] == '"':
+                mimic_data_path = mimic_data_path[1:-1]
+        
+            folder_paths = {'mimic_data_path':mimic_data_path}
+            # Save in Seperate JSON
+            with open(os.getcwd() + '/folder_paths.json','w') as fp:
+                json.dump(folder_paths, fp)
+                
+    return diags
+
+get_mimic_data_path()
+diags = load_diagnoses_data()
 
 
-#### Load MIMIC III Diagnoses Data
-diags = pd.read_csv(folder_paths.get('mimic_data_path') + '/DIAGNOSES_ICD.csv')
-print('Diagnoses data loaded.')
-
-
+##### Functions for sequence processing
 def concat_func(x):
         x = ' '.join(x.values)
         return x
@@ -65,10 +96,6 @@ def shuffle_list(x):
 def remove_duplicates(x):
     return list(set(x))
 
-#### Cols
-    # subject_id = pat_id
-    # hadm_id = hospital stay
-    # seq_num = prioirty of code; SEQ_NUM == 1.0 ==> primiary_dx
 
 # drop: row_id, seq_num
 diags.drop(['ROW_ID','SEQ_NUM'],axis=1,inplace=True)
