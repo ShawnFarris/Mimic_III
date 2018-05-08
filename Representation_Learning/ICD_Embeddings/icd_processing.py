@@ -32,23 +32,6 @@ print(args)
 base = os.getcwd()
 
 
-'''
-Notes:
-    1. stemmed dx codes are only 2 digits (is this always true??)
-        - options:
-            1. process dx and px seperately
-            2. adjust logic by including code source: dx or px in full_codes
-    
-'''
-
-'''
-Delete This
-
-'''
-#base = '/home/shawn/Mimic_III_dev/Full_ICD_Embeddings'
-#args.truncate_codes = True
-#args.min_sequence_length = 3
-
 #### check if folder_path already saved
 # To Do: eliminate need to rerun script
 def get_mimic_data_path():
