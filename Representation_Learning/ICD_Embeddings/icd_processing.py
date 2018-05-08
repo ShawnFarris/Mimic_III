@@ -31,6 +31,24 @@ print(args)
 # Get directory
 base = os.getcwd()
 
+
+'''
+Notes:
+    1. stemmed dx codes are only 2 digits (is this always true??)
+        - options:
+            1. process dx and px seperately
+            2. adjust logic by including code source: dx or px in full_codes
+    
+'''
+
+'''
+Delete This
+
+'''
+#base = '/home/shawn/Mimic_III_dev/Full_ICD_Embeddings'
+#args.truncate_codes = True
+#args.min_sequence_length = 3
+
 #### check if folder_path already saved
 # To Do: eliminate need to rerun script
 def get_mimic_data_path():
@@ -53,7 +71,8 @@ def get_mimic_data_path():
             with open(os.getcwd() + '/folder_paths.json','w') as fp:
                 json.dump(folder_paths, fp)
         
-def load_diagnoses_data(): 
+def load_data(data): 
+        
     data_loaded = False
     # Check if MIMIC_Data path has already been saved
     with open(base + '/folder_paths.json') as fp:
@@ -61,8 +80,8 @@ def load_diagnoses_data():
         
     while data_loaded == False:
         try:	
-            diags = pd.read_csv(folder_paths.get('mimic_data_path') + '/DIAGNOSES_ICD.csv')
-            print('Diagnoses data loaded.')
+            df = pd.read_csv(folder_paths.get('mimic_data_path') + '/' + data + '_ICD.csv')
+            print(data + ' data loaded.')
             data_loaded = True
             
         ## if mimic_data_path doesn't work            
@@ -77,10 +96,12 @@ def load_diagnoses_data():
             with open(os.getcwd() + '/folder_paths.json','w') as fp:
                 json.dump(folder_paths, fp)
                 
-    return diags
+    return df
 
 get_mimic_data_path()
-diags = load_diagnoses_data()
+diags = load_data(data='DIAGNOSES')
+procedures = load_data(data='PROCEDURES')
+
 
 
 ##### Functions for sequence processing
@@ -96,39 +117,44 @@ def shuffle_list(x):
 def remove_duplicates(x):
     return list(set(x))
 
-
-# drop: row_id, seq_num
-diags.drop(['ROW_ID','SEQ_NUM'],axis=1,inplace=True)
-
-# Drop Rows with blank codes
-diags = diags.dropna()
-
 # Truncate/stem codes
 if args.truncate_codes:
     diags['ICD9_CODE'] = diags['ICD9_CODE'].str[0:3]
-    
+    procedures['ICD9_CODE'] = procedures['ICD9_CODE'].astype('str').str[0:2]
+
+
+full_codes = pd.concat((diags,procedures),axis=0,ignore_index=True)
+
+
+# drop: row_id, seq_num
+full_codes.drop(['ROW_ID','SEQ_NUM'],axis=1,inplace=True)
+
+# Drop Rows with blank codes
+full_codes = full_codes.dropna()
+
+
 ########################################################################################################################
 ######################################             Visit Level Processing       ########################################
 ########################################################################################################################
 
 # Create dataframe of ICD sequences
-diag_seqs = diags.groupby(['SUBJECT_ID','HADM_ID']).agg({'ICD9_CODE':concat_func}).reset_index()
+code_seqs = full_codes.groupby(['SUBJECT_ID','HADM_ID']).agg({'ICD9_CODE':concat_func}).reset_index()
 
 # Shuffle sequences and drop duplicate codes
-diag_seqs['tmp'] = diag_seqs['ICD9_CODE'].str.split(' ')
-diag_seqs['tmp'] = diag_seqs['tmp'].apply(lambda x: shuffle_list(x))    
-diag_seqs['tmp'] = diag_seqs['tmp'].apply(lambda x: remove_duplicates(x))    
-diag_seqs['ICD_SEQ'] = diag_seqs['tmp'].apply(lambda x: ' '.join(x))
-diag_seqs.drop(['tmp','ICD9_CODE'],axis=1,inplace=True)
+code_seqs['tmp'] = code_seqs['ICD9_CODE'].str.split(' ')
+code_seqs['tmp'] = code_seqs['tmp'].apply(lambda x: shuffle_list(x))    
+code_seqs['tmp'] = code_seqs['tmp'].apply(lambda x: remove_duplicates(x))    
+code_seqs['ICD_SEQ'] = code_seqs['tmp'].apply(lambda x: ' '.join(x))
+code_seqs.drop(['tmp','ICD9_CODE'],axis=1,inplace=True)
 
 
 # Limit to sequences of given length
-diag_seqs['SEQ_LEN'] = diag_seqs['ICD_SEQ'].str.split(' ').apply(lambda x: len(x))
-diag_seqs = diag_seqs[diag_seqs['SEQ_LEN'] >= args.min_sequence_length]
-diag_seqs.drop(['SEQ_LEN'], axis = 1, inplace = True)
+code_seqs['SEQ_LEN'] = code_seqs['ICD_SEQ'].str.split(' ').apply(lambda x: len(x))
+code_seqs = code_seqs[code_seqs['SEQ_LEN'] >= args.min_sequence_length]
+code_seqs.drop(['SEQ_LEN'], axis = 1, inplace = True)
     
 # Save data in Model/embedding folder
-diag_seqs.to_csv(base + '/Processed_Data/diagnoses_sequences.csv',index=False)
-print('Processed sequences saved to: ' + base + '/Processed_Data/diagnoses_sequences.csv')
+code_seqs.to_csv(base + '/Processed_Data/icd_sequences.csv',index=False)
+print('Processed sequences saved to: ' + base + '/Processed_Data/icd_sequences.csv')
 
 

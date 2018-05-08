@@ -98,10 +98,29 @@ def plot_embedding(show_plot = False, label = '',  n_clusters = 5):
         chart.save(base + '/Plots/icd_clustered_embedding.png')                
         if show_plot:               
             print(chart)
+            
+    elif label == 'Code_type':      
+        ### Annotate by desc
+        plot_df = df_tsne.copy(deep = True)
+        plot_df = pd.merge(plot_df, icd9_desc, left_on = 'label', right_on = 'icd9',how='left')
+        plot_df.drop(['label','icd9'],axis=1,inplace=True)
+        plot_df.rename(columns = {'type':'label'},inplace=True)
+                  
+        chart = ggplot(plot_df, aes(x='x1', y='x2',color = 'label') ) \
+                + geom_point(size=70
+                             ,alpha=0.6
+                             ) \
+                + ggtitle("Word2Vec Embeddings")
+#                + scale_color_manual(values = ["red", "blue","green", "purple","orange"
+        #                                       , "#6DABE4","#65CBC9"
+        
+        chart.save(base + '/Plots/icd_embedding_code_type.png')                
+        if show_plot:               
+            print(chart)
    
 plot_embedding(show_plot = args.show_plots)
 plot_embedding(show_plot = args.show_plots, label = 'Category')
 plot_embedding(show_plot = args.show_plots,label = 'Cluster')
-
+plot_embedding(show_plot = args.show_plots, label = 'Code_type')
 
 

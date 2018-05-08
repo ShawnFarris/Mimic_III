@@ -36,8 +36,8 @@ print(args)
 base = os.getcwd()
 
 #### Load diagnoses sequences
-print('Loaded diagnoses sequences.')
-input_df = pd.read_csv(base + '/Processed_Data/diagnoses_sequences.csv')
+print('Loaded icd sequences.')
+input_df = pd.read_csv(base + '/Processed_Data/icd_sequences.csv')
 
 sents = input_df.drop(['SUBJECT_ID','HADM_ID'],axis=1)
 sents = sents['ICD_SEQ'].str.split(' ')

@@ -2,10 +2,10 @@
 
 Navigate to the `ICD_Embeddings` folder from the terminal. When you are running these scripts for the first time, you will need to enter the path to your local copy of the Mimic III data as csv's. 
 
-Start by loading the `diagnoses` data and processing it for embeddings:
+Start by loading the `diagnoses` and `procedures` data and processing it for embeddings:
 
 ```
-python process_diagnoses.py < --full_codes, --min_sequences>
+python icd_processing.py < --full_codes, --min_sequences>
 ```
 
 Compute train the Word2Vec embeddings of the diagnoses sequences. Note: to get full reproducibility of this embedding, you will need to use only a single worker thread (workers=1) in the Word2Vec model AND you must set the `PYTHONHASHSEED` enviorment variable when running this script.
