@@ -12,12 +12,12 @@ import pandas as pd
 import numpy as np
 import os
 import pickle
-from matplotlib import pyplot
-import matplotlib.pyplot as plt
+# from matplotlib import pyplot
+# import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
-from ggplot import ggplot, geom_point, scale_color_manual, ggtitle, aes
-from ggplot import *
+# from ggplot import ggplot, geom_point, scale_color_manual, ggtitle, aes
+# from ggplot import *
 from sklearn.cluster import KMeans
 import sys
 import argparse
